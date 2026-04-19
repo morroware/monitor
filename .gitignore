@@ -1,0 +1,9 @@
+uptime_data/config.ini
+uptime_data/*.json
+uptime_data/*.log
+uptime_data/checks/*.json
+uptime_data/checks/*.txt
+uptime_data/checks/cooldown_*.txt
+uptime_data/login_*.json
+install.php.disabled-*
+assets/logo.png

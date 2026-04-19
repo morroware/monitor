@@ -1,0 +1,38 @@
+# Castle Fun Center Monitor — Apache hardening
+# Works on most cPanel hosts (Apache 2.2 / 2.4).
+
+Options -Indexes
+DirectoryIndex index.php index.html
+
+# Deny access to sensitive files at the web root.
+<FilesMatch "\.(ini|log|md|example|disabled[^\s]*)$">
+    # Apache 2.4
+    <IfModule mod_authz_core.c>
+        Require all denied
+    </IfModule>
+    # Apache 2.2 fallback
+    <IfModule !mod_authz_core.c>
+        Order allow,deny
+        Deny from all
+    </IfModule>
+</FilesMatch>
+
+# Never serve anything inside uptime_data/ or lib/ directly.
+RedirectMatch 403 ^.*/(uptime_data|lib)/.*\.(json|ini|php|log|txt)$
+
+# Long-cache static assets.
+<IfModule mod_expires.c>
+    ExpiresActive On
+    ExpiresByType text/css          "access plus 7 days"
+    ExpiresByType application/javascript "access plus 7 days"
+    ExpiresByType image/png         "access plus 30 days"
+    ExpiresByType image/svg+xml     "access plus 30 days"
+</IfModule>
+
+# Security headers — safe defaults.
+<IfModule mod_headers.c>
+    Header set X-Content-Type-Options "nosniff"
+    Header set X-Frame-Options "SAMEORIGIN"
+    Header set Referrer-Policy "strict-origin-when-cross-origin"
+    Header set Permissions-Policy "geolocation=(), microphone=(), camera=()"
+</IfModule>
